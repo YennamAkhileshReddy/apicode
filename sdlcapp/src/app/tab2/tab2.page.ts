@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {CallAzureService} from '../api/call-azure.service';
 
 @Component({
   selector: 'app-tab2',
@@ -7,6 +8,17 @@ import { Component } from '@angular/core';
 })
 export class Tab2Page {
 
-  constructor() {}
+  
+  buildResponse:any =[]; 
+  constructor (public azurecall:CallAzureService){}
+
+  getBuildDetails()
+  {
+    
+    this.azurecall.GetAzureDetails().subscribe((data)=>{
+       var anyData=<any>data;
+        this.buildResponse=anyData.data;
+    })
+  }
 
 }

@@ -7,10 +7,13 @@
 </ion-header>
 
 <ion-content>
-<ion-button (click)="getBuildDetails()">Get Non Prod Build Details</ion-button>
+<ion-button (click)="getBuildDetails()">Get  Build Details</ion-button>
+
+
 <ion-list *ngFor="let build of buildResponse.value">
-  <ion-item>
-    {{build.buildNumber}} {{build.status}}  {{build.result}}
+  
+  <ion-item  > 
+    {{build.definition.name}}   {{build.buildNumber}}  {{build.result}}
 
   </ion-item>
 </ion-list>

@@ -8,9 +8,20 @@ import {CallAzureService} from '../api/call-azure.service';
 })
 export class Tab2Page {
 
-  
+  checkSameValue1= "sdlcnetcoreapp";   //initialised before constructor
+  checkSameValue2="SDLC_Mobile_Build";   //initialised before constructor
   buildResponse:any =[]; 
   constructor (public azurecall:CallAzureService){}
+  
+  displayCondition(checkValue, elementValue) {
+          if(this.checkSameValue1 && this.checkSameValue1 == checkValue) {
+            return false;
+          }
+          if(checkValue == elementValue) {
+            this.checkSameValue1 = checkValue;
+            return true;
+          }
+        }
 
   getBuildDetails()
   {

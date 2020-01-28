@@ -16,8 +16,9 @@ export class Tab2Page {
   {
     
     this.azurecall.GetAzureDetails().subscribe((data)=>{
-       var anyData=<any>data;
-        this.buildResponse=anyData.data;
+       let anyData=<any>data;
+        this.buildResponse=anyData;
+        console.log(this.buildResponse, "\n" ,data,"\n" ,anyData);
     })
   }
 

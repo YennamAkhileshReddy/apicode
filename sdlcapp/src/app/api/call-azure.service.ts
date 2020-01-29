@@ -20,4 +20,19 @@ export class CallAzureService {
                           
 //https://dev.azure.com/GIRISHSHARMA0640/DevOpsSM/_apis/build/builds?api-version=5.1
   }
+
+  InitiateAzureBuild()
+  {
+    let authheaders: HttpHeaders = new HttpHeaders();
+    authheaders.append('Content-Type', 'application/json');
+    authheaders.append('Authorization', "2xbpth7m4xi34hx6wawwpbyfvllscthvfgiowukmngbaat3lddwa");
+    
+
+    return this.http.post("https://dev.azure.com/GIRISHSHARMA0640/DevOpsSM/_apis/build/builds?api-version=5.1", {headers: authheaders});
+                          
+
+  }
+
+  
+
 }

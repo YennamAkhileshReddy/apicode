@@ -33,4 +33,14 @@ export class Tab2Page {
     })
   }
 
+  InitiateBuild()
+  {
+    
+    this.azurecall.InitiateAzureBuild().subscribe((data)=>{
+       let anyData=<any>data;
+        this.buildResponse=anyData;
+        console.log(this.buildResponse, "\n" ,data,"\n" ,anyData);
+    })
+  }
+
 }

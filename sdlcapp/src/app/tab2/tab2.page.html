@@ -7,8 +7,9 @@
 </ion-header>
 
 <ion-content>
-<ion-button (click)="getBuildDetails()">Get  Build Details</ion-button>
+<ion-button (click)="InitiateBuild()">Initiate Build</ion-button>
 
+<ion-button (click)="getBuildDetails()">Get Build Details</ion-button>
 
 <ion-list *ngFor="let build of buildResponse.value">
   

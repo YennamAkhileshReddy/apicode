@@ -6,4 +6,33 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content></ion-content>
+<ion-content>
+
+  
+  
+  <ion-content>
+    <ion-list-header color="light">Release Details</ion-list-header>
+    <ion-card class="welcome-card">
+      <ion-card-header>
+        <ion-card-title>SDLC Report</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div id="highcharts" style="width:100%; height:500px;">
+          <highcharts-chart style="margin: 30px;"
+          [Highcharts]="Highcharts"
+          [constructorType]="chartConstructor"
+          [options]="chartOptions"
+          [callbackFunction]="chartCallback"
+          [(update)]="updateFlag"
+          [runOutsideAngular]="runOutsideAngularFlag"></highcharts-chart>
+
+        </div>
+       </ion-card-content>
+      </ion-card> 
+  
+  </ion-content>
+
+  <div>Check App Health</div>
+  <ion-button (click)="HealthCheckApp()">Get Mobile App Health</ion-button>
+  <ion-button (click)="HealthCheckDotNet()">Get DotNet App Health</ion-button>
+</ion-content>

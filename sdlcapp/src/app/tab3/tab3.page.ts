@@ -25,7 +25,7 @@ export class Tab3Page {
         categories: ['DotNet', 'MobileApp']
       },
       yAxis: {
-        min: 0;
+       
         title: {
           text: 'App Type'
           
@@ -54,7 +54,7 @@ export class Tab3Page {
 
   }
 
-  HealthCheckDotNet(){}
-  HealthCheckApp(){}
+  HealthCheckDotNet(){ alert("dotNet App is running Green");}
+  HealthCheckApp(){alert("Mobile App is running Green");}
 
 }

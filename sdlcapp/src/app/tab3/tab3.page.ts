@@ -7,12 +7,22 @@ import * as HighCharts from 'highcharts';
   styleUrls: ['tab3.page.scss']
 })
 export class Tab3Page {
-  chart='';
-  updateFromInput=false;
-  Highcharts=HighCharts;
-  chartConstructor='chart';
-  chartCallback;
-  chartOptions={
+
+  constructor() {
+    //const self= this;
+    }
+
+    ionViewDidEnter(){
+      this.plotSimpleBarChart();
+    }
+
+    plotSimpleBarChart(){
+  let myChart=HighCharts.chart('highcharts',{
+  // updateFromInput=false;
+  // Highcharts=HighCharts;
+  // chartConstructor='chart';
+  // chartCallback;
+  // chartOptions={
 
 
       chart: {
@@ -22,12 +32,12 @@ export class Tab3Page {
         text: ''
       },
       xAxis: {
-        categories: ['DotNet', 'MobileApp']
+        categories: ['Mobile App', 'DotNet App']
       },
       yAxis: {
        
         title: {
-          text: 'App Type'
+          text: 'Deploy Status'
           
         },
         labels: {
@@ -37,30 +47,34 @@ export class Tab3Page {
       },
       series: [
         {
-          name: 'DotNet',
+          name: 'Pass',
           type: undefined,
-          data: [1,  2]
+          data: [30,  40]
         },
         {
-          name: 'Mobile',
+          name: 'Failed',
           type: undefined,
-          data: [2,  1]
+          data: [7,  10]
         }]
-    };
-  constructor() {
-  const self= this;
-  
-  this.chartCallback= (chart) =>{ 
-    setTimeout(()=> {
-      chart.reflow();
-      self.chart=chart;
-    },0);
-    
-  }
-
+    });
   }
 
   HealthCheckDotNet(){ alert("dotNet App is running Green");}
   HealthCheckApp(){alert("Mobile App is running Green");}
 
 }
+  //constructor() {
+  //const self= this;
+  //}
+  // this.chartCallback= (chart) =>{ 
+  //   setTimeout(()=> {
+  //     chart.reflow();
+  //     self.chart=chart;
+  //   },0);
+    
+  // }
+
+
+
+
+

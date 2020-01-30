@@ -14,19 +14,12 @@
       </ion-card-header>
       <ion-card-content>
         <div id="highcharts" style="width:100%; height:400px;">
-          <highcharts-chart style="margin: 30px;"
-          [Highcharts]="Highcharts"
-          [constructorType]="chartConstructor"
-          [options]="chartOptions"
-          [callbackFunction]="chartCallback"
-          
-          
-          ></highcharts-chart>
+        
         </div>
        </ion-card-content>
       </ion-card> 
 
-      <div>Check App Health </div>
+      <div>   Check App Health </div>
   <ion-button (click)="HealthCheckApp()">Get Mobile App Health</ion-button>
   <ion-button (click)="HealthCheckDotNet()">Get DotNet App Health</ion-button>
 

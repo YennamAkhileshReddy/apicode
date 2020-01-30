@@ -50,7 +50,13 @@ export class Tab3Page {
   constructor() {
   const self= this;
   
-  this.chartCallback=chart =>{  self.chart=chart;}
+  this.chartCallback= (chart) =>{ 
+    setTimeout(()=> {
+      chart.reflow();
+      self.chart=chart;
+    },0);
+    
+  }
 
   }
 

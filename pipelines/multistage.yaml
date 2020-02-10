@@ -91,12 +91,6 @@ stages:
         runOnce:
           deploy:
             steps:
-              - task: DownloadBuildArtifacts@0
-                inputs:
-                  buildType: 'current'
-                  downloadType: 'single'
-                  artifactName: 'drop'
-                  downloadPath: '$(System.ArtifactsDirectory)'
               - task: AzureRmWebAppDeployment@4
                 inputs:
                   ConnectionType: 'AzureRM'
@@ -106,12 +100,12 @@ stages:
                   packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
                   RuntimeStack: 'DOTNETCORE|1.0'
   - stage: DeployPreProdStage
-    displayName: Deploy Dev
-    dependsOn: Build
+    displayName: Deploy PreProd
+    dependsOn: DeployQA2Stage
     condition: succeeded()
     jobs:
-    - deployment: DeployDev
-      displayName: Deploy Dev
+    - deployment: DeployPreProd
+      displayName: Deploy PreProd
       environment: preprod
       pool: 'ubuntu-latest'
       strategy:
@@ -134,7 +128,7 @@ stages:
                   RuntimeStack: 'DOTNETCORE|1.0'
   - stage: DeployProdStage
     displayName: Deploy Prod
-    dependsOn: Build
+    dependsOn: DeployPreProdStage
     condition: succeeded()
     jobs:
     - deployment: SwapPreProdwithProd
@@ -145,12 +139,6 @@ stages:
         runOnce:
           deploy:
             steps:
-              - task: DownloadBuildArtifacts@0
-                inputs:
-                  buildType: 'current'
-                  downloadType: 'single'
-                  artifactName: 'drop'
-                  downloadPath: '$(System.ArtifactsDirectory)'
               - task: AzureRmWebAppDeployment@4
                 inputs:
                   ConnectionType: 'AzureRM'

@@ -9,8 +9,7 @@ stages:
             displayName: 'Use .NET Core sdk'
             inputs:
               packageType: 'sdk'
-              version: '3.0'
-              includePreviewVersions: true
+              version: '3.1.1'
           - task: DotNetCoreCLI@2
             displayName: 'dotnet restore'
             inputs:
@@ -63,7 +62,7 @@ stages:
                   appType: 'webAppLinux'
                   WebAppName: 'sdlcrules01-dev'
                   packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
-                  RuntimeStack: 'DOTNETCORE|3.0'
+                  RuntimeStack: 'DOTNETCORE|3.1.1'
   - stage: DeployQAStage
     displayName: Deploy to QA
     dependsOn: DeployDevStage
@@ -94,7 +93,7 @@ stages:
                   ResourceGroupName: 'WMSDLC-linux'
                   SlotName: 'blue'
                   packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
-                  RuntimeStack: 'DOTNETCORE|3.0'
+                  RuntimeStack: 'DOTNETCORE|3.1.1'
   - stage: DeployQA2Stage
     displayName: Deploy QA2
     dependsOn: DeployQAStage
@@ -146,7 +145,7 @@ stages:
                   ResourceGroupName: 'WMSDLC-linux'
                   SlotName: 'blue'
                   packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
-                  RuntimeStack: 'DOTNETCORE|3.0'
+                  RuntimeStack: 'DOTNETCORE|3.1.1'
   - stage: DeployProdStage
     displayName: Deploy Prod
     dependsOn: DeployPreProdStage

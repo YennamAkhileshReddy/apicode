@@ -6,21 +6,26 @@ stages:
           vmImage: 'ubuntu-latest'
         steps:
           - task: DotNetCoreCLI@2
+            displayName: 'dotnet restore'
             inputs:
               command: 'restore'
               projects: 'sdlcdotnetcoreapps/sdlc-log-api01/sdlc-log-api01.csproj'
-              feedsToUse: 'select'
+              arguments: '--configuration release'
           - task: DotNetCoreCLI@2
+            displayName: 'dotnet build'
             inputs:
               command: 'build'
               projects: 'sdlcdotnetcoreapps/sdlc-log-api01/sdlc-log-api01.csproj'
+              arguments: '--configuration release'
           - task: DotNetCoreCLI@2
+            displayName: 'dotnet publish'
             inputs:
               command: 'publish'
               publishWebProjects: false
               projects: 'sdlcdotnetcoreapps/sdlc-log-api01/sdlc-log-api01.csproj'
-              arguments: '--output $(Build.ArtifactStagingDirectory)'
+              arguments: '--configuration release --output $(Build.ArtifactStagingDirectory)'
           - task: PublishBuildArtifacts@1
+            displayName: 'publish to drop'
             inputs:
               PathtoPublish: '$(Build.ArtifactStagingDirectory)'
               ArtifactName: 'drop'

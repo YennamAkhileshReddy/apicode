@@ -61,7 +61,7 @@ stages:
                   azureSubscription: 'SDLC_Connection_linux'
                   appType: 'webAppLinux'
                   WebAppName: 'sdlcrules01-dev'
-                  packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+                  packageForLinux: '$(System.DefaultWorkingDirectory)/drop/*.zip'
                   RuntimeStack: 'DOTNETCORE|3.1.1'
   - stage: DeployQAStage
     displayName: Deploy to QA
@@ -92,7 +92,7 @@ stages:
                   deployToSlotOrASE: true
                   ResourceGroupName: 'WMSDLC-linux'
                   SlotName: 'blue'
-                  packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+                  packageForLinux: '$(System.DefaultWorkingDirectory)/drop/*.zip'
                   RuntimeStack: 'DOTNETCORE|3.1.1'
   - stage: DeployQA2Stage
     displayName: Deploy QA2
@@ -144,7 +144,7 @@ stages:
                   deployToSlotOrASE: true
                   ResourceGroupName: 'WMSDLC-linux'
                   SlotName: 'blue'
-                  packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+                  packageForLinux: '$(System.DefaultWorkingDirectory)/drop/*.zip'
                   RuntimeStack: 'DOTNETCORE|3.1.1'
   - stage: DeployProdStage
     displayName: Deploy Prod

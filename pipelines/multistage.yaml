@@ -15,8 +15,7 @@ stages:
             inputs:
               command: 'restore'
               projects: 'sdlcdotnetcoreapps/sdlc-log-api01/sdlc-log-api01.csproj'
-              feedsToUse: 'config'
-              nugetConfigPath: '$(Agent.ToolsDirectory)/dotnet'
+              feedsToUse: 'select'
           - task: DotNetCoreCLI@2
             displayName: 'dotnet build'
             inputs:

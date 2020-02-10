@@ -2,7 +2,8 @@ stages:
   - stage: Build
     jobs:
       - job: Build
-        pool: ubuntu-latest
+        pool: 
+          vmImage: 'ubuntu-latest'
         steps:
           - task: DotNetCoreCLI@2
             inputs:
@@ -18,7 +19,7 @@ stages:
               command: 'publish'
               publishWebProjects: false
               projects: 'sdlcdotnetcoreapps/sdlc-log-api01/sdlc-log-api01.csproj'
-              arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+              arguments: '--output $(Build.ArtifactStagingDirectory)'
           - task: PublishBuildArtifacts@1
             inputs:
               PathtoPublish: '$(Build.ArtifactStagingDirectory)'
@@ -32,7 +33,8 @@ stages:
     - deployment: DeployDev
       displayName: Deploy Dev
       environment: dev
-      pool: 'ubuntu-latest'
+      pool: 
+        vmImage: 'ubuntu-latest'
       strategy:
         runOnce:
           deploy:
@@ -46,11 +48,11 @@ stages:
               - task: AzureRmWebAppDeployment@4
                 inputs:
                   ConnectionType: 'AzureRM'
-                  azureSubscription: 'WMSDLC Connection'
+                  azureSubscription: 'SDLC_Connection_linux'
                   appType: 'webAppLinux'
-                  WebAppName: 'sampleapp01'
+                  WebAppName: 'sdlcrules01-dev'
                   packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
-                  RuntimeStack: 'DOTNETCORE|1.0'
+                  RuntimeStack: 'DOTNETCORE|3.1'
   - stage: DeployQAStage
     displayName: Deploy to QA
     dependsOn: DeployDevStage
@@ -59,7 +61,8 @@ stages:
     - deployment: DeployQA
       displayName: Deploy QA
       environment: qa
-      pool: 'ubuntu-latest'
+      pool: 
+        vmImage: 'ubuntu-latest'
       strategy:
         runOnce:
           deploy:
@@ -73,11 +76,14 @@ stages:
               - task: AzureRmWebAppDeployment@4
                 inputs:
                   ConnectionType: 'AzureRM'
-                  azureSubscription: 'WMSDLC Connection'
+                  azureSubscription: 'SDLC_Connection_linux'
                   appType: 'webAppLinux'
-                  WebAppName: 'sampleapp01'
+                  WebAppName: 'sdlcrules01-qa'
+                  deployToSlotOrASE: true
+                  ResourceGroupName: 'WMSDLC-linux'
+                  SlotName: 'blue'
                   packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
-                  RuntimeStack: 'DOTNETCORE|1.0'
+                  RuntimeStack: 'DOTNETCORE|3.1'
   - stage: DeployQA2Stage
     displayName: Deploy QA2
     dependsOn: DeployQAStage
@@ -86,19 +92,19 @@ stages:
     - deployment: DeployQA2 
       displayName: SwapQABluewithGreen
       environment: qa2
-      pool: 'ubuntu-latest'
+      pool: 
+        vmImage: 'ubuntu-latest'
       strategy:
         runOnce:
           deploy:
             steps:
-              - task: AzureRmWebAppDeployment@4
+              - task: AzureAppServiceManage@0
                 inputs:
-                  ConnectionType: 'AzureRM'
-                  azureSubscription: 'WMSDLC Connection'
-                  appType: 'webAppLinux'
-                  WebAppName: 'sampleapp01'
-                  packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
-                  RuntimeStack: 'DOTNETCORE|1.0'
+                  azureSubscription: 'SDLC_Connection_linux'
+                  Action: 'Swap Slots'
+                  WebAppName: 'sdlcrules01-qa'
+                  ResourceGroupName: 'WMSDLC-linux'
+                  SourceSlot: 'blue'
   - stage: DeployPreProdStage
     displayName: Deploy PreProd
     dependsOn: DeployQA2Stage
@@ -107,7 +113,8 @@ stages:
     - deployment: DeployPreProd
       displayName: Deploy PreProd
       environment: preprod
-      pool: 'ubuntu-latest'
+      pool: 
+        vmImage: 'ubuntu-latest'
       strategy:
         runOnce:
           deploy:
@@ -121,31 +128,34 @@ stages:
               - task: AzureRmWebAppDeployment@4
                 inputs:
                   ConnectionType: 'AzureRM'
-                  azureSubscription: 'WMSDLC Connection'
+                  azureSubscription: 'SDLC_Connection_linux'
                   appType: 'webAppLinux'
-                  WebAppName: 'sampleapp01'
+                  WebAppName: 'sdlcrules01'
+                  deployToSlotOrASE: true
+                  ResourceGroupName: 'WMSDLC-linux'
+                  SlotName: 'blue'
                   packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
-                  RuntimeStack: 'DOTNETCORE|1.0'
+                  RuntimeStack: 'DOTNETCORE|3.1'
   - stage: DeployProdStage
     displayName: Deploy Prod
     dependsOn: DeployPreProdStage
     condition: succeeded()
     jobs:
-    - deployment: SwapPreProdwithProd
-      displayName: Deploy Dev
+    - deployment: SwapProdBluewithGreen
+      displayName: Deploy to Prod
       environment: prod
-      pool: 'ubuntu-latest'
+      pool: 
+        vmImage: 'ubuntu-latest'
       strategy:
         runOnce:
           deploy:
             steps:
-              - task: AzureRmWebAppDeployment@4
+              - task: AzureAppServiceManage@0
                 inputs:
-                  ConnectionType: 'AzureRM'
-                  azureSubscription: 'WMSDLC Connection'
-                  appType: 'webAppLinux'
-                  WebAppName: 'sampleapp01'
-                  packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
-                  RuntimeStack: 'DOTNETCORE|1.0'
+                  azureSubscription: 'SDLC_Connection_linux'
+                  Action: 'Swap Slots'
+                  WebAppName: 'sdlcrules01'
+                  ResourceGroupName: 'WMSDLC-linux'
+                  SourceSlot: 'blue'
   
            

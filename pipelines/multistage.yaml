@@ -10,20 +10,20 @@ stages:
             inputs:
               command: 'restore'
               projects: 'sdlcdotnetcoreapps/sdlc-log-api01/sdlc-log-api01.csproj'
-              arguments: '--configuration release'
+              arguments: '--configuration Release'
           - task: DotNetCoreCLI@2
             displayName: 'dotnet build'
             inputs:
               command: 'build'
               projects: 'sdlcdotnetcoreapps/sdlc-log-api01/sdlc-log-api01.csproj'
-              arguments: '--configuration release'
+              arguments: '--configuration Release'
           - task: DotNetCoreCLI@2
             displayName: 'dotnet publish'
             inputs:
               command: 'publish'
               publishWebProjects: false
               projects: 'sdlcdotnetcoreapps/sdlc-log-api01/sdlc-log-api01.csproj'
-              arguments: '--configuration release --output $(Build.ArtifactStagingDirectory)'
+              arguments: '--configuration Release --output $(Build.ArtifactStagingDirectory)'
           - task: PublishBuildArtifacts@1
             displayName: 'publish to drop'
             inputs:

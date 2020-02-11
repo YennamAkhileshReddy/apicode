@@ -50,12 +50,13 @@ stages:
         runOnce:
           deploy:
             steps:
+              - download: none
               - task: DownloadBuildArtifacts@0
                 displayName: 'Download artifacts from Devops'
                 inputs:
                   buildType: 'current'
                   downloadType: 'single'
-                  artifactName: '(Drop).$(Build.BuildId)'
+                  artifactName: '$(Drop).$(Build.BuildId)'
                   downloadPath: '$(System.ArtifactsDirectory)'
               - task: AzureRmWebAppDeployment@4
                 inputs:
@@ -63,8 +64,8 @@ stages:
                   azureSubscription: 'SDLC_Connection_linux'
                   appType: 'webAppLinux'
                   WebAppName: 'sdlcrules01-dev'
-                  packageForLinux: '$(System.ArtifactDirectory)/$(Drop).$(Build.BuildId)/$(project_name).zip'
-                  RuntimeStack: 'DOTNETCORE|3.0'
+                  packageForLinux: '$(System.ArtifactsDirectory)/$(Drop).$(Build.BuildId)/$(project_name).zip'
+                  RuntimeStack: 'DOTNETCORE|3.1'
   - stage: DeployQAStage
     displayName: Deploy to QA
     dependsOn: DeployDevStage
@@ -79,11 +80,12 @@ stages:
         runOnce:
           deploy:
             steps:
+              - download: none
               - task: DownloadBuildArtifacts@0
                 inputs:
                   buildType: 'current'
                   downloadType: 'single'
-                  artifactName: '(Drop).$(Build.BuildId)'
+                  artifactName: '$(Drop).$(Build.BuildId)'
                   downloadPath: '$(System.ArtifactsDirectory)'
               - task: AzureRmWebAppDeployment@4
                 inputs:
@@ -94,8 +96,8 @@ stages:
                   deployToSlotOrASE: true
                   ResourceGroupName: 'WMSDLC-linux'
                   SlotName: 'blue'
-                  packageForLinux: '$(System.ArtifactDirectory)/$(Drop).$(Build.BuildId)/$(project_name).zip'
-                  RuntimeStack: 'DOTNETCORE|3.0'
+                  packageForLinux: '$(System.ArtifactsDirectory)/$(Drop).$(Build.BuildId)/$(project_name).zip'
+                  RuntimeStack: 'DOTNETCORE|3.1'
   - stage: DeployQA2Stage
     displayName: Deploy QA2
     dependsOn: DeployQAStage
@@ -110,6 +112,7 @@ stages:
         runOnce:
           deploy:
             steps:
+              - download: none
               - task: AzureAppServiceManage@0
                 inputs:
                   azureSubscription: 'SDLC_Connection_linux'
@@ -131,11 +134,12 @@ stages:
         runOnce:
           deploy:
             steps:
+              - download: none
               - task: DownloadBuildArtifacts@0
                 inputs:
                   buildType: 'current'
                   downloadType: 'single'
-                  artifactName: '(Drop).$(Build.BuildId)'
+                  artifactName: '$(Drop).$(Build.BuildId)'
                   downloadPath: '$(System.ArtifactsDirectory)'
               - task: AzureRmWebAppDeployment@4
                 inputs:
@@ -146,8 +150,8 @@ stages:
                   deployToSlotOrASE: true
                   ResourceGroupName: 'WMSDLC-linux'
                   SlotName: 'blue'
-                  packageForLinux: '$(System.ArtifactDirectory)/$(Drop).$(Build.BuildId)/$(project_name).zip'
-                  RuntimeStack: 'DOTNETCORE|3.0'
+                  packageForLinux: '$(System.ArtifactsDirectory)/$(Drop).$(Build.BuildId)/$(project_name).zip'
+                  RuntimeStack: 'DOTNETCORE|3.1'
   - stage: DeployProdStage
     displayName: Deploy Prod
     dependsOn: DeployPreProdStage
@@ -162,6 +166,7 @@ stages:
         runOnce:
           deploy:
             steps:
+              - download: none
               - task: AzureAppServiceManage@0
                 inputs:
                   azureSubscription: 'SDLC_Connection_linux'

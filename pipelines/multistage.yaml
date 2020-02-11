@@ -10,6 +10,7 @@ stages:
             inputs:
               packageType: 'sdk'
               version: '3.0.102'
+              includePreviewVersions: true
           - task: DotNetCoreCLI@2
             displayName: 'dotnet restore'
             inputs:
@@ -17,6 +18,7 @@ stages:
               projects: '$(project_path)'
               feedsToUse: 'select'
               vstsFeed: '$(Agent.ToolsDirectory)/dotnet'
+              includeNuGetOrg: false
           - task: DotNetCoreCLI@2
             displayName: 'dotnet build'
             inputs:

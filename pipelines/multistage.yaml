@@ -62,7 +62,7 @@ stages:
                   appType: 'webAppLinux'
                   WebAppName: 'sdlcrules01-dev'
                   packageForLinux: '$(System.DefaultWorkingDirectory)/drop/*.zip'
-                  RuntimeStack: 'DOTNETCORE|3.1.1'
+                  RuntimeStack: 'DOTNETCORE|3.1.101'
   - stage: DeployQAStage
     displayName: Deploy to QA
     dependsOn: DeployDevStage
@@ -93,7 +93,7 @@ stages:
                   ResourceGroupName: 'WMSDLC-linux'
                   SlotName: 'blue'
                   packageForLinux: '$(System.DefaultWorkingDirectory)/drop/*.zip'
-                  RuntimeStack: 'DOTNETCORE|3.1.1'
+                  RuntimeStack: 'DOTNETCORE|3.1.101'
   - stage: DeployQA2Stage
     displayName: Deploy QA2
     dependsOn: DeployQAStage
@@ -145,7 +145,7 @@ stages:
                   ResourceGroupName: 'WMSDLC-linux'
                   SlotName: 'blue'
                   packageForLinux: '$(System.DefaultWorkingDirectory)/drop/*.zip'
-                  RuntimeStack: 'DOTNETCORE|3.1.1'
+                  RuntimeStack: 'DOTNETCORE|3.1.101'
   - stage: DeployProdStage
     displayName: Deploy Prod
     dependsOn: DeployPreProdStage

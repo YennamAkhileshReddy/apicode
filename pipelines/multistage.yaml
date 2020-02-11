@@ -15,7 +15,6 @@ stages:
             inputs:
               command: 'restore'
               projects: '$(project_path)'
-              feedsToUse: 'select'
               arguments: '--configuration Release'
           - task: DotNetCoreCLI@2
             displayName: 'dotnet build'

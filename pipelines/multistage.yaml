@@ -61,7 +61,7 @@ stages:
                   azureSubscription: 'SDLC_Connection_linux'
                   appType: 'webAppLinux'
                   WebAppName: 'sdlcrules01-dev'
-                  packageForLinux: '$(System.DefaultWorkingDirectory)/drop/*.zip'
+                  packageForLinux: '$(System.DefaultWorkingDirectory)/drop/$(sdlc-log-api01).zip'
                   RuntimeStack: 'DOTNETCORE|3.1.101'
   - stage: DeployQAStage
     displayName: Deploy to QA

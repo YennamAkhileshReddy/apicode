@@ -8,7 +8,7 @@ stages:
           - task: UseDotNet@2
             displayName: 'Use .NET Core sdk'
             inputs:
-              packageType: 'sdk'
+              packageType: 'runtime'
               version: '3.1.101'
           - task: DotNetCoreCLI@2
             displayName: 'dotnet restore'
@@ -16,6 +16,7 @@ stages:
               command: 'restore'
               projects: '$(project_path)'
               feedsToUse: 'select'
+              arguments: '--configuration Release'
           - task: DotNetCoreCLI@2
             displayName: 'dotnet build'
             inputs:
@@ -63,7 +64,7 @@ stages:
                   azureSubscription: 'SDLC_Connection_linux'
                   appType: 'webAppLinux'
                   WebAppName: 'sdlcrules01-dev'
-                  packageForLinux: '$(System.ArtifactDirectory)/$(Drop).$(Build.BuildId)/$(project_name).zip'
+                  packageForLinux: '$(System.ArtifactDirectory)/$(Drop).$(Build.BuildId)/*.zip'
                   RuntimeStack: 'DOTNETCORE|3.1.101'
   - stage: DeployQAStage
     displayName: Deploy to QA

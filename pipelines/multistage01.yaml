@@ -50,12 +50,9 @@ stages:
         runOnce:
           deploy:
             steps:
-              - task: DownloadPipelineArtifact@2
-                inputs:
-                  buildType: 'current'
-                  artifactName: '$(Drop).$(Build.BuildId)'
-                  targetPath: '$(Pipeline.Workspace)'
+              - download: none
               - task: DownloadBuildArtifacts@0
+                displayName: 'Download artifacts from Devops'
                 inputs:
                   buildType: 'current'
                   downloadType: 'single'

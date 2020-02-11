@@ -15,8 +15,8 @@ stages:
             inputs:
               command: 'restore'
               projects: '$(project_path)'
-              feedsToUse: 'config'
-              nugetConfigPath: '$(Agent.ToolsDirectory)/dotnet'
+              feedsToUse: 'select'
+              vstsFeed: '$(Agent.ToolsDirectory)/dotnet'
           - task: DotNetCoreCLI@2
             displayName: 'dotnet build'
             inputs:

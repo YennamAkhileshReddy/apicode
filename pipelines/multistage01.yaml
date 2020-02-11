@@ -112,6 +112,7 @@ stages:
         runOnce:
           deploy:
             steps:
+              - download: none
               - task: AzureAppServiceManage@0
                 inputs:
                   azureSubscription: 'SDLC_Connection_linux'
@@ -165,6 +166,7 @@ stages:
         runOnce:
           deploy:
             steps:
+              - download: none
               - task: AzureAppServiceManage@0
                 inputs:
                   azureSubscription: 'SDLC_Connection_linux'

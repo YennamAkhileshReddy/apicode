@@ -53,10 +53,7 @@ stages:
               - task: DownloadBuildArtifacts@0
                 displayName: 'Download artifacts from Devops'
                 inputs:
-                  buildType: 'specific'
-                  project: 'e716c477-b317-4f3c-97e3-6229f7c7025f'
-                  pipeline: '9'
-                  buildVersionToDownload: 'latest'
+                  buildType: 'current'
                   downloadType: 'single'
                   artifactName: '(Drop).$(Build.BuildId)'
                   downloadPath: '$(System.ArtifactsDirectory)'
@@ -66,7 +63,7 @@ stages:
                   azureSubscription: 'SDLC_Connection_linux'
                   appType: 'webAppLinux'
                   WebAppName: 'sdlcrules01-dev'
-                  packageForLinux: '$(System.ArtifactDirectory)/$(Drop).$(Build.BuildId)/*.zip'
+                  packageForLinux: '$(System.ArtifactDirectory)/$(Drop).$(Build.BuildId)/$(project_name).zip'
                   RuntimeStack: 'DOTNETCORE|3.0'
   - stage: DeployQAStage
     displayName: Deploy to QA

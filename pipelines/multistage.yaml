@@ -53,8 +53,12 @@ stages:
               - task: DownloadBuildArtifacts@0
                 displayName: 'Download artifacts from Devops'
                 inputs:
-                  buildType: 'current'
-                  downloadType: 'specific'
+                  buildType: 'specific'
+                  project: 'e716c477-b317-4f3c-97e3-6229f7c7025f'
+                  pipeline: '9'
+                  buildVersionToDownload: 'latest'
+                  downloadType: 'single'
+                  artifactName: '(Drop).$(Build.BuildId)'
                   downloadPath: '$(System.ArtifactsDirectory)'
               - task: AzureRmWebAppDeployment@4
                 inputs:

@@ -1,5 +1,5 @@
 stages:
-  - stage: Build
+  - stage: BuildStage
     jobs:
       - job: Build
         pool: 
@@ -36,9 +36,25 @@ stages:
               PathtoPublish: '$(Build.ArtifactStagingDirectory)'
               ArtifactName: '$(Drop).$(Build.BuildId)'
               publishLocation: 'Container'
+      - job: InvokeApi
+        dependsOn: Build
+        condition: succeeded
+        pool: server
+        steps: 
+          - task: InvokeRESTAPI@1
+            inputs:
+              connectionType: 'connectedServiceName'
+              serviceConnection: 'APIM_Service_Connection'
+              method: 'GET'
+              headers: |
+                {
+                Ocp-Apim-Subscription-Key: a4fc5d09d8574f65b12ee71093bb53e8
+                }
+              urlSuffix: 'WMACM01-dev/getvalues'
+              waitForCompletion: 'false'
   - stage: DeployDevStage
     displayName: Deploy Dev
-    dependsOn: Build
+    dependsOn: BuildStage
     condition: succeeded()
     jobs:
     - deployment: DeployDev

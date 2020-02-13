@@ -1,0 +1,81 @@
+stages:
+  - stage: Build
+    jobs:
+      - job: Build
+        pool: 
+          vmImage: 'ubuntu-18.04'
+        steps:
+          - task: UseDotNet@2
+            displayName: 'Use .NET Core sdk'
+            inputs:
+              packageType: 'sdk'
+              version: '3.1.101'
+          - task: DotNetCoreCLI@2
+            displayName: 'dotnet restore'
+            inputs:
+              command: 'restore'
+              projects: '$(project_path)'
+              feedsToUse: 'select'
+          - task: DotNetCoreCLI@2
+            displayName: 'dotnet build'
+            inputs:
+              command: 'build'
+              projects: '$(project_path)'
+              arguments: '--configuration Release'
+          - task: DotNetCoreCLI@2
+            displayName: 'dotnet publish'
+            inputs:
+              command: 'publish'
+              publishWebProjects: false
+              projects: '$(project_path)'
+              arguments: '--configuration Release --output $(Build.ArtifactStagingDirectory)'
+              zipAfterPublish: true
+          - task: PublishBuildArtifacts@1
+            displayName: 'publish to drop'
+            inputs:
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+              ArtifactName: '$(Drop).$(Build.BuildId)'
+              publishLocation: 'Container'
+  - stage: ApiAppDeploy
+    displayName: Api Deploy to WebApp
+    dependsOn: Build
+    condition: succeeded()
+    jobs:
+      - job: Build
+        pool: 
+          vmImage: 'ubuntu-18.04'
+        steps: 
+          - 
+  
+  - stage: DeployDevStage
+    displayName: Deploy Dev
+    dependsOn: Build
+    condition: succeeded()
+    jobs:
+    - deployment: DeployDev
+      displayName: Deploy Dev
+      environment: dev
+      pool: 
+        vmImage: 'ubuntu-18.04'
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - download: none
+              - task: DownloadBuildArtifacts@0
+                displayName: 'Download artifacts from Devops'
+                inputs:
+                  buildType: 'current'
+                  downloadType: 'single'
+                  artifactName: '$(Drop).$(Build.BuildId)'
+                  downloadPath: '$(System.ArtifactsDirectory)'
+              - task: AzureRmWebAppDeployment@4
+                inputs:
+                  ConnectionType: 'AzureRM'
+                  azureSubscription: 'SDLC_Connection_linux'
+                  appType: 'webAppLinux'
+                  WebAppName: 'sdlcrules01-dev'
+                  packageForLinux: '$(System.ArtifactsDirectory)/$(Drop).$(Build.BuildId)/$(project_name).zip'
+                  RuntimeStack: 'DOTNETCORE|3.1'
+
+           

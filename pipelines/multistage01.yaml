@@ -1,9 +1,9 @@
 stages:
-  - stage: Build
+  - stage: BuildStage
     jobs:
       - job: Build
         pool: 
-          vmImage: 'ubuntu-16.04'
+          vmImage: 'ubuntu-18.04'
         steps:
           - task: UseDotNet@2
             displayName: 'Use .NET Core sdk'
@@ -14,20 +14,20 @@ stages:
             displayName: 'dotnet restore'
             inputs:
               command: 'restore'
-              projects: 'sdlcdotnetcoreapps/sdlc-log-api01/sdlc-log-api01.csproj'
+              projects: '$(project_path)'
               feedsToUse: 'select'
           - task: DotNetCoreCLI@2
             displayName: 'dotnet build'
             inputs:
               command: 'build'
-              projects: 'sdlcdotnetcoreapps/sdlc-log-api01/sdlc-log-api01.csproj'
+              projects: '$(project_path)'
               arguments: '--configuration Release'
           - task: DotNetCoreCLI@2
             displayName: 'dotnet publish'
             inputs:
               command: 'publish'
               publishWebProjects: false
-              projects: 'sdlcdotnetcoreapps/sdlc-log-api01/sdlc-log-api01.csproj'
+              projects: '$(project_path)'
               arguments: '--configuration Release --output $(Build.ArtifactStagingDirectory)'
               zipAfterPublish: true
           - task: PublishBuildArtifacts@1
@@ -36,26 +36,43 @@ stages:
               PathtoPublish: '$(Build.ArtifactStagingDirectory)'
               ArtifactName: '$(Drop).$(Build.BuildId)'
               publishLocation: 'Container'
+      - job: InvokeApi
+        dependsOn: Build
+        condition: succeeded
+        pool: server
+        steps: 
+          - task: InvokeRESTAPI@1
+            inputs:
+              connectionType: 'connectedServiceName'
+              serviceConnection: 'APIM_Service_Connection'
+              method: 'GET'
+              headers: |
+                {
+                Ocp-Apim-Subscription-Key: a4fc5d09d8574f65b12ee71093bb53e8
+                }
+              urlSuffix: 'WMACM01-dev/getvalues'
+              waitForCompletion: 'false'
   - stage: DeployDevStage
     displayName: Deploy Dev
-    dependsOn: Build
+    dependsOn: BuildStage
     condition: succeeded()
     jobs:
     - deployment: DeployDev
       displayName: Deploy Dev
       environment: dev
       pool: 
-        vmImage: 'ubuntu-16.04'
+        vmImage: 'ubuntu-18.04'
       strategy:
         runOnce:
           deploy:
             steps:
+              - download: none
               - task: DownloadBuildArtifacts@0
                 displayName: 'Download artifacts from Devops'
                 inputs:
                   buildType: 'current'
                   downloadType: 'single'
-                  artifactName: '(Drop).$(Build.BuildId)'
+                  artifactName: '$(Drop).$(Build.BuildId)'
                   downloadPath: '$(System.ArtifactsDirectory)'
               - task: AzureRmWebAppDeployment@4
                 inputs:
@@ -63,8 +80,8 @@ stages:
                   azureSubscription: 'SDLC_Connection_linux'
                   appType: 'webAppLinux'
                   WebAppName: 'sdlcrules01-dev'
-                  packageForLinux: '$(System.ArtifactDirectory)/$(Drop).$(Build.BuildId)/$(project_name).zip'
-                  RuntimeStack: 'DOTNETCORE|3.1.101'
+                  packageForLinux: '$(System.ArtifactsDirectory)/$(Drop).$(Build.BuildId)/$(project_name).zip'
+                  RuntimeStack: 'DOTNETCORE|3.1'
   - stage: DeployQAStage
     displayName: Deploy to QA
     dependsOn: DeployDevStage
@@ -74,16 +91,17 @@ stages:
       displayName: Deploy QA
       environment: qa
       pool: 
-        vmImage: 'ubuntu-16.04'
+        vmImage: 'ubuntu-18.04'
       strategy:
         runOnce:
           deploy:
             steps:
+              - download: none
               - task: DownloadBuildArtifacts@0
                 inputs:
                   buildType: 'current'
                   downloadType: 'single'
-                  artifactName: '(Drop).$(Build.BuildId)'
+                  artifactName: '$(Drop).$(Build.BuildId)'
                   downloadPath: '$(System.ArtifactsDirectory)'
               - task: AzureRmWebAppDeployment@4
                 inputs:
@@ -94,8 +112,8 @@ stages:
                   deployToSlotOrASE: true
                   ResourceGroupName: 'WMSDLC-linux'
                   SlotName: 'blue'
-                  packageForLinux: '$(System.ArtifactDirectory)/$(Drop).$(Build.BuildId)/$(project_name).zip'
-                  RuntimeStack: 'DOTNETCORE|3.1.101'
+                  packageForLinux: '$(System.ArtifactsDirectory)/$(Drop).$(Build.BuildId)/$(project_name).zip'
+                  RuntimeStack: 'DOTNETCORE|3.1'
   - stage: DeployQA2Stage
     displayName: Deploy QA2
     dependsOn: DeployQAStage
@@ -105,11 +123,12 @@ stages:
       displayName: SwapQABluewithGreen
       environment: qa2
       pool: 
-        vmImage: 'ubuntu-16.04'
+        vmImage: 'ubuntu-18.04'
       strategy:
         runOnce:
           deploy:
             steps:
+              - download: none
               - task: AzureAppServiceManage@0
                 inputs:
                   azureSubscription: 'SDLC_Connection_linux'
@@ -126,16 +145,17 @@ stages:
       displayName: Deploy PreProd
       environment: preprod
       pool: 
-        vmImage: 'ubuntu-16.04'
+        vmImage: 'ubuntu-18.04'
       strategy:
         runOnce:
           deploy:
             steps:
+              - download: none
               - task: DownloadBuildArtifacts@0
                 inputs:
                   buildType: 'current'
                   downloadType: 'single'
-                  artifactName: '(Drop).$(Build.BuildId)'
+                  artifactName: '$(Drop).$(Build.BuildId)'
                   downloadPath: '$(System.ArtifactsDirectory)'
               - task: AzureRmWebAppDeployment@4
                 inputs:
@@ -146,8 +166,8 @@ stages:
                   deployToSlotOrASE: true
                   ResourceGroupName: 'WMSDLC-linux'
                   SlotName: 'blue'
-                  packageForLinux: '$(System.ArtifactDirectory)/$(Drop).$(Build.BuildId)/$(project_name).zip'
-                  RuntimeStack: 'DOTNETCORE|3.1.101'
+                  packageForLinux: '$(System.ArtifactsDirectory)/$(Drop).$(Build.BuildId)/$(project_name).zip'
+                  RuntimeStack: 'DOTNETCORE|3.1'
   - stage: DeployProdStage
     displayName: Deploy Prod
     dependsOn: DeployPreProdStage
@@ -157,11 +177,12 @@ stages:
       displayName: Deploy to Prod
       environment: prod
       pool: 
-        vmImage: 'ubuntu-16.04'
+        vmImage: 'ubuntu-18.04'
       strategy:
         runOnce:
           deploy:
             steps:
+              - download: none
               - task: AzureAppServiceManage@0
                 inputs:
                   azureSubscription: 'SDLC_Connection_linux'
@@ -169,5 +190,3 @@ stages:
                   WebAppName: 'sdlcrules01'
                   ResourceGroupName: 'WMSDLC-linux'
                   SourceSlot: 'blue'
-  
-           
